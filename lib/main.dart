@@ -1,15 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:ui';
-
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:minimalauncher/pages/home_page.dart';
-import 'package:minimalauncher/pages/left_screen.dart';
-import 'package:minimalauncher/pages/right_screen.dart';
-import 'package:minimalauncher/pages/widgets/app_drawer.dart';
-import 'package:minimalauncher/variables/strings.dart';
+import '../pages/home_page.dart';
+import '../pages/left_screen.dart';
+import '../pages/right_screen.dart';
+import '../pages/widgets/app_drawer.dart';
+import '../variables/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:installed_apps/installed_apps.dart';
 
@@ -31,7 +29,9 @@ class _LauncherState extends State<Launcher> {
   Color selectedColor = Colors.white;
   Color textColor = Colors.black;
 
-  final PageController _pageController = PageController(initialPage: 1);
+  final PageController _pageController = PageController(
+    initialPage: 1,
+  );
 
   final GlobalKey<HomeScreenState> _homeScreenKey =
       GlobalKey<HomeScreenState>();
@@ -43,17 +43,18 @@ class _LauncherState extends State<Launcher> {
   }
 
   // Load preferences from shared preferences
-  _loadPreferences() async {
+  Future<void> _loadPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if (!prefs.containsKey(prefsShowWallpaper)) {
       prefs.setBool(prefsShowWallpaper, false);
     }
     if (!prefs.containsKey(prefsSelectedColor)) {
-      prefs.setInt(prefsSelectedColor, Color.fromRGBO(228, 228, 228, 1).value);
+      prefs.setInt(
+          prefsSelectedColor, Color.fromRGBO(228, 228, 228, 1).toARGB32());
     }
     if (!prefs.containsKey(prefsTextColor)) {
-      prefs.setInt(prefsTextColor, Color.fromRGBO(84, 84, 84, 1).value);
+      prefs.setInt(prefsTextColor, Color.fromRGBO(84, 84, 84, 1).toARGB32());
     }
 
     setState(() {
@@ -175,7 +176,7 @@ class _LauncherState extends State<Launcher> {
 }
 
 class SnappyScrollPhysics extends PageScrollPhysics {
-  const SnappyScrollPhysics({ScrollPhysics? parent}) : super(parent: parent);
+  const SnappyScrollPhysics({super.parent});
 
   @override
   SnappyScrollPhysics applyTo(ScrollPhysics? ancestor) {

@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:installed_apps/installed_apps.dart';
-import 'package:minimalauncher/pages/helpers/app_icon.dart';
-import 'package:minimalauncher/pages/right_screen.dart';
-import 'package:minimalauncher/pages/settings_page.dart';
-import 'package:minimalauncher/pages/widgets/app_drawer.dart';
-import 'package:minimalauncher/variables/strings.dart';
+import '../pages/helpers/app_icon.dart';
+import '../pages/right_screen.dart';
+import '../pages/settings_page.dart';
+import '../pages/widgets/app_drawer.dart';
+import '../variables/strings.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallpaper_manager_flutter/wallpaper_manager_flutter.dart';
@@ -53,7 +53,7 @@ class _LeftScreenState extends State<LeftScreen> {
   }
 
   // Load preferences from shared preferences
-  _loadPreferences() async {
+  Future<void> _loadPreferences() async {
     _prefs = await SharedPreferences.getInstance();
 
     if (!_prefs.containsKey(prefsSelectedColor)) {

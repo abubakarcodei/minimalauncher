@@ -9,9 +9,9 @@ import 'package:flutter/services.dart';
 import 'package:installed_apps/installed_apps.dart';
 import 'package:interactive_slider/interactive_slider.dart';
 import 'package:intl/intl.dart';
-import 'package:minimalauncher/pages/right_screen.dart';
-import 'package:minimalauncher/pages/widgets/app_drawer.dart';
-import 'package:minimalauncher/variables/strings.dart';
+import '../pages/right_screen.dart';
+import '../pages/widgets/app_drawer.dart';
+import '../variables/strings.dart';
 // import 'package:notification_listener/notification_listener.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -87,7 +87,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   // Load preferences from shared preferences
-  _loadPreferences() async {
+  Future<void> _loadPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       is24HourFormat = prefs.getBool(prefsIs24HourFormat) ?? true;
@@ -259,7 +259,7 @@ class HomeScreenState extends State<HomeScreen> {
             children: [
               TextSpan(
                 text:
-                    "${DateFormat.d().format(DateTime.now())} ${DateFormat.MMM().format(DateTime.now()).toUpperCase()}$homeStatsSeperator${DateFormat.EEEE().format(DateTime.now()).toUpperCase()}$homeStatsSeperator$_batteryLevel",
+                    "${DateFormat.d().format(DateTime.now())} ${DateFormat.MMM().format(DateTime.now()).toUpperCase()}$homeStatsSeparator${DateFormat.EEEE().format(DateTime.now()).toUpperCase()}$homeStatsSeparator$_batteryLevel",
                 style: TextStyle(
                   color: textColor,
                   fontSize: 16,
@@ -298,8 +298,8 @@ class HomeScreenState extends State<HomeScreen> {
                 iconSize: 20,
                 enabled: false,
                 disabledOpacity: 1,
-                backgroundColor: textColor.withOpacity(0.1),
-                foregroundColor: textColor.withOpacity(0.8),
+                backgroundColor: textColor.withValues(alpha: 0.1),
+                foregroundColor: textColor.withValues(alpha: 0.8),
                 unfocusedOpacity: 1,
               ),
             ),
@@ -508,10 +508,12 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> _setDayStartEndTime() async {
     final start =
         await _pickTime(context, 'Select Day Start Time', defaultStartTime);
+    if (!mounted) return;
     final end = await _pickTime(context, 'Select Day End Time', defaultEndTime);
 
     if (start != null && end != null) {
       final prefs = await SharedPreferences.getInstance();
+      if (!mounted) return;
       await prefs.setInt('dayStartHour', start.hour);
       await prefs.setInt('dayStartMinute', start.minute);
       await prefs.setInt('dayEndHour', end.hour);
@@ -740,6 +742,7 @@ class ClockWidget extends StatelessWidget {
                   try {
                     await _channel.invokeMethod('showClock');
                   } on PlatformException catch (e) {
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text("Could not open the clock app. $e"),

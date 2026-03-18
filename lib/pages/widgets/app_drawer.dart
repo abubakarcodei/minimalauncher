@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:installed_apps/app_info.dart';
 import 'package:installed_apps/installed_apps.dart';
-import 'package:minimalauncher/pages/helpers/app_icon.dart';
 import 'package:minimalauncher/variables/strings.dart';
+import 'package:minimalauncher/pages/helpers/app_icon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Application {
@@ -42,17 +42,17 @@ class AppDrawer extends StatefulWidget {
   final Color bgColor, textColor;
 
   const AppDrawer({
-    Key? key,
+    super.key,
     required this.autoFocusSearch,
     required this.bgColor,
     required this.textColor,
-  }) : super(key: key);
+  });
 
   @override
-  _AppDrawerState createState() => _AppDrawerState();
+  AppDrawerState createState() => AppDrawerState();
 }
 
-class _AppDrawerState extends State<AppDrawer> {
+class AppDrawerState extends State<AppDrawer> {
   List<Application> apps = [];
   List<Application> recentApps = [];
   List<Application> favoriteApps = [];
@@ -109,14 +109,16 @@ class _AppDrawerState extends State<AppDrawer> {
           ? DateTime.fromMillisecondsSinceEpoch(timestamp)
           : null;
     } catch (e) {
-      print('Error getting install time: $e');
+      debugPrint('Error getting install time: $e');
       return null;
     }
   }
 
   Future<void> _fetchAndCacheApps() async {
-    List<AppInfo> installedApps =
-        await InstalledApps.getInstalledApps(false, false);
+    List<AppInfo> installedApps = await InstalledApps.getInstalledApps(
+      excludeSystemApps: false,
+      withIcon: true,
+    );
 
     // Sort the apps by install time (most recent first)
     // installedApps
@@ -286,7 +288,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 showAllApps = true;
               });
             },
-            backgroundColor: textColor.withOpacity(0.8),
+            backgroundColor: textColor.withValues(alpha: 0.8),
             icon: Icon(
               Icons.grid_view_rounded,
               color: bgColor,
@@ -430,7 +432,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: textColor.withOpacity(0.1),
+                    color: textColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: Image.asset(
@@ -449,7 +451,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: textColor.withOpacity(0.1),
+                    color: textColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: Image.asset(
@@ -487,7 +489,9 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
               onSubmitted: (value) {
                 HapticFeedback.mediumImpact();
-                Navigator.pop(context, filteredApps[0].packageName);
+                if (filteredApps.isNotEmpty) {
+                  Navigator.pop(context, filteredApps[0].packageName);
+                }
               },
             ),
           ),
@@ -502,7 +506,7 @@ class _AppDrawerState extends State<AppDrawer> {
           .invokeMethod('canLaunchApp', {'packageName': packageName});
       // print("$packageName can launch: $result");
       return result;
-    } on PlatformException catch (e) {
+    } on PlatformException {
       // print("Error: ${e.message}");
       return false;
     }
@@ -510,7 +514,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
   Future<void> searchPlayStore(String query) async {
     if (query.trim() == "") {
-      openAppByPackageName(googleplaystorePackageName);
+      openAppByPackageName(googlePlayStorePackageName);
       return;
     }
     try {

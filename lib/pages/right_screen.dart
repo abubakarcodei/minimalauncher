@@ -1,9 +1,9 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:minimalauncher/variables/strings.dart';
+import '../variables/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:minimalauncher/pages/widgets/calendar_view.dart';
+import '../pages/widgets/calendar_view.dart';
 import 'dart:convert';
 
 class Event {
@@ -39,11 +39,13 @@ class Event {
 }
 
 class RightScreen extends StatefulWidget {
+  const RightScreen({super.key});
+
   @override
-  _RightScreenState createState() => _RightScreenState();
+  RightScreenState createState() => RightScreenState();
 }
 
-class _RightScreenState extends State<RightScreen> {
+class RightScreenState extends State<RightScreen> {
   List<Event> _events = [];
   Color selectedColor = Colors.transparent;
   Color textColor = Colors.transparent;
@@ -55,7 +57,7 @@ class _RightScreenState extends State<RightScreen> {
     super.initState();
   }
 
-  _loadPreferences() async {
+  Future<void> _loadPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
@@ -98,12 +100,16 @@ class _RightScreenState extends State<RightScreen> {
       assetAudioPath: 'assets/notification.mp3',
       loopAudio: false,
       vibrate: true,
-      fadeDuration: 1.0,
       androidFullScreenIntent: true,
       notificationSettings: NotificationSettings(
         title: event.name,
         body: event.description,
         stopButton: 'Mark as done',
+      ),
+      volumeSettings: VolumeSettings.fade(
+        fadeDuration: Duration(
+          seconds: 1,
+        ),
       ),
     );
 
@@ -384,7 +390,7 @@ class _RightScreenState extends State<RightScreen> {
                           margin: EdgeInsets.symmetric(
                               vertical: 8.0), // Adds spacing between list items
                           decoration: BoxDecoration(
-                            color: textColor.withOpacity(0.02),
+                            color: textColor.withValues(alpha: 0.02),
                             borderRadius: BorderRadius.circular(16.0),
                           ),
                           child: ListTile(

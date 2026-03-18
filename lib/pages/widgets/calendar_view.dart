@@ -10,20 +10,20 @@ class CustomCalendarView extends StatefulWidget {
   final String fontFamily;
   final List<Event> events;
 
-  CustomCalendarView({
-    Key? key,
+  const CustomCalendarView({
+    super.key,
     required this.initialDate,
     required this.bgColor,
     required this.textColor,
     required this.events,
     required this.fontFamily,
-  }) : super(key: key);
+  });
 
   @override
-  _CustomCalendarViewState createState() => _CustomCalendarViewState();
+  CustomCalendarViewState createState() => CustomCalendarViewState();
 }
 
-class _CustomCalendarViewState extends State<CustomCalendarView> {
+class CustomCalendarViewState extends State<CustomCalendarView> {
   late DateTime selectedDate;
 
   @override
@@ -86,7 +86,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                         style: TextStyle(
                           fontSize: 14,
                           fontFamily: widget.fontFamily,
-                          color: widget.textColor.withOpacity(0.7),
+                          color: widget.textColor.withValues(alpha: 0.7),
                         ),
                       ),
                     )),
@@ -148,7 +148,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
               IconButton(
                 icon: Icon(
                   Icons.arrow_back_ios_rounded,
-                  color: widget.textColor.withOpacity(0.5),
+                  color: widget.textColor.withValues(alpha: 0.5),
                   size: 24,
                 ),
                 onPressed: () {
@@ -176,7 +176,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
               IconButton(
                 icon: Icon(
                   Icons.arrow_forward_ios_rounded,
-                  color: widget.textColor.withOpacity(0.5),
+                  color: widget.textColor.withValues(alpha: 0.5),
                   size: 24,
                 ),
                 onPressed: () {
@@ -200,7 +200,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                         style: TextStyle(
                           fontSize: 14,
                           fontFamily: widget.fontFamily,
-                          color: widget.textColor.withOpacity(0.5),
+                          color: widget.textColor.withValues(alpha: 0.5),
                         ),
                       ),
                     ),
@@ -263,7 +263,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                     color: currentDate.day == DateTime.now().day &&
                             currentDate.month == DateTime.now().month &&
                             currentDate.year == DateTime.now().year
-                        ? widget.textColor.withOpacity(0.35)
+                        ? widget.textColor.withValues(alpha: 0.35)
                         : Colors.transparent,
                   ),
                 ),

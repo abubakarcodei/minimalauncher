@@ -13,9 +13,9 @@ const String prefsWeatherTemp = 'tempr';
 const String prefsWeatherLocation = 'areaname';
 const String prefsWeatherDesc = 'weather';
 
-const String homeStatsSeperator = '   /   ';
+const String homeStatsSeparator = '   /   ';
 
 const String launcherPackageName = 'com.example.minimalauncher';
 
 const String googlePackageName = 'com.google.android.googlequicksearchbox';
-const String googleplaystorePackageName = 'com.android.vending';
+const String googlePlayStorePackageName = 'com.android.vending';

@@ -3,15 +3,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:minimalauncher/variables/strings.dart';
+import '../variables/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  SettingsPageState createState() => SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class SettingsPageState extends State<SettingsPage> {
   bool showWallpaper = false;
   bool is24HourFormat = false;
   Color selectedColor = Colors.white; // Background color
@@ -25,7 +27,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   // Load preferences from shared preferences
-  _loadPreferences() async {
+  Future<void> _loadPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
@@ -43,20 +45,21 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   // Save preferences to shared preferences
-  _savePreferences() async {
+  Future<void> _savePreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool(prefsShowWallpaper, showWallpaper);
     prefs.setBool(prefsIs24HourFormat, is24HourFormat);
-    prefs.setInt(prefsSelectedColor, selectedColor.value);
-    prefs.setInt(prefsTextColor, textColor.value);
+    prefs.setInt(prefsSelectedColor, selectedColor.toARGB32());
+    prefs.setInt(prefsTextColor, textColor.toARGB32());
     preferencesChanged = true;
   }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         Future.delayed(Duration.zero, () {
+          if (!context.mounted) return;
           Navigator.of(context).maybePop(true);
           // Navigator.pop(context, true);
         });
@@ -85,7 +88,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Text(
                 "Changing the 'Show Wallpaper' or 'Background Color' setting will restart the app.",
                 style: TextStyle(
-                  color: textColor.withOpacity(0.5),
+                  color: textColor.withValues(alpha: 0.5),
                   fontFamily: fontNormal,
                   fontSize: 12.0,
                 ),
@@ -188,7 +191,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   // Show color picker dialog
-  _showColorPicker(BuildContext context, String pickerType) {
+  void _showColorPicker(BuildContext context, String pickerType) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
